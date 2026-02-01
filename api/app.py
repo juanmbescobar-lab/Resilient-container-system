@@ -9,7 +9,7 @@ def home():
     delay = random.uniform(0, 2)
     time.sleep(delay)
     return {
-        "status": "ok",
+        "status": "still ok",
         "delay_seconds": round(delay, 2)
     }
 
