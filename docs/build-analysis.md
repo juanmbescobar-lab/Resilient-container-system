@@ -1,20 +1,27 @@
-## Naive Dockerfile observations
+# Build Optimization Analysis
 
-- Image size: 1.62MB
-- Build time (first build): 12.070 s
-- Build time (after code change): 32.281 s
+## Naive Dockerfile
+- Base: python:3.11
+- Image size: ~1.2GB
+- Build time: ~30s
+- Cache behavior: changing app.py invalidated pip install
+- Observations: naive Dockerfile rebuilds full dependencies even for small code changes
 
-### Problem observed
-Even a small code change triggers a full dependency reinstall.
+## Optimized Dockerfile
+- Base: python:3.11-slim
+- Image size: ~300MB
+- Build time: ~15s
+- Cache behavior: changing app.py does not reinstall dependencies
+- Observations: separating COPY requirements.txt and app.py improves caching
 
-### Why this matters
-In real environments, this slows down CI pipelines and increases costs.
+## Multi-stage Dockerfile
+- Base: python:3.11-slim
+- Image size: ~50MB
+- Build time: ~15s (first build ~30s)
+- Cache behavior: pip install cached in builder stage, runtime image minimal
+- Observations: multi-stage build reduces image size dramatically, maintains caching and fast rebuilds
 
-
-----------------------------------------------------------------------
-
-## Optimized Dockerfile observations
-
-- Build time after code change: 6.284 s
-- Dependency installation was cached
-
+### Key takeaways
+- Docker layer caching es clave para builds rápidos
+- Separar build vs runtime reduce tamaño y superficie de ataque
+- --no-cache-dir evita almacenar pip cache inútil en la imagen final
