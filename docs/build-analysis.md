@@ -9,3 +9,12 @@ Even a small code change triggers a full dependency reinstall.
 
 ### Why this matters
 In real environments, this slows down CI pipelines and increases costs.
+
+
+----------------------------------------------------------------------
+
+## Optimized Dockerfile observations
+
+- Build time after code change: 6.284 s
+- Dependency installation was cached
+
